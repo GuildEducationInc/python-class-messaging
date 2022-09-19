@@ -38,8 +38,9 @@ There's a bit to go through here:
 - `data={...}` is the data to send in your request. It's effectively sending a message that contains a "fromUser" - "From", a "toUser" - "To", and a text "message". Feel free to play around with these values. I will note, however, that changing or removing "toUser" will cause issues.
 
 ### Get messages
-- `requests.get('http://localhost:8080/get-messages/To')`
+- `resp = requests.get('http://localhost:8080/get-messages/To')`
 Here's what this is saying:
 - `requests.get` is making a "GET" request to your server.
 - `get-messages` tells Flask where to go with your request - in this case, the `get_messages` function in `message_server/__init__.py`
 - `To` is the "toUser" specified in the message that was posted earlier
+- The response is stored in the `resp` variable. To see the actual content of the response, just type `resp.content`.
