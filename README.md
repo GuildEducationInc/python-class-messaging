@@ -16,13 +16,17 @@ All of the commands here need to be run on the command line. The instructions he
   - `python3 -m venv venv` (This creates a copy of python in a directory called `venv` where you can install libraries without messing with the system-level libraries. Think of it as a temporary python install. If you ever need to reset everything, just delete the directory and reinstall with this command.)
   - `. venv/bin/activate` (This "turns on" that temporary python. To turn it back off again, run `deactivate`).
   - `pip install -r requirements.txt` (This installs the necessary libraries to run this code - specifically Flask and requests)
-  
+
 ### To run the server:
-`FLASK_APP=message_server flask run -h localhost -p 8080` (this tells flask to use the code in `message_server` as its application code and also says to respond on `localhost` which is your local machine and on port 8080)
+`FLASK_APP=message_server/app.py flask run -h localhost -p 8080` (this tells flask to use the code in `message_server/app.py` as its application code and also says to respond on `localhost` which is your local machine and on port 8080)
 
 To interact with the server, we're using a library called `requests` which is installed with the `pip install` command in the prerequisites. It allows you to make web requests to a web server programatically. You should run the server in one window and then open a new window, go to the directory you've got the code in, activate your virtual environment (`. venv/bin/activate`), then run python in interactive mode: `python`.
 
 There is a lot around Flask I'm currently not going over (especially what the `@app.route` stuff is in the code). Effectively, those lines of code just tell Flask how to route the request. We can cover in more detail another time.
+
+### Running tests
+Unit tests are stored in the `tests` directory. To run:
+- `PYTHONPATH=$PYTHONPATH:. pytest`
 
 ### Set up to interact with API
 - Switch to the directory where you pulled the code
