@@ -7,12 +7,6 @@ import sqlite3
 # Flask is what we'll use to create the actual app instance
 from flask import request, Flask
 
-# defaultdict is a really handy convenience tool that allows you to
-# create a python dictionary that will have default values when you access a key
-# In this case, if I request a key that doesn't exist, it will return an empty array.
-# For more info, see https://realpython.com/python-defaultdict/
-from collections import defaultdict
-
 # Creating the Flask APP. `__name__` is a variable that is accessible to all python modules
 # and isn't particularly relevant at the moment
 app = Flask(__name__)
