@@ -17,6 +17,15 @@ All of the commands here need to be run on the command line. The instructions he
   - `. venv/bin/activate` (This "turns on" that temporary python. To turn it back off again, run `deactivate`).
   - `pip install -r requirements.txt` (This installs the necessary libraries to run this code - specifically Flask and requests)
 
+### Creating the message table (new):
+With an activated virtual environment, run `python create_message_table.py`.
+
+### Looking at the message table (new):
+You can use the `sqlite3` command line tool to inspect the new database. Type `sqlite3 messages.db` and then you can execute the following commands:
+- `.tables` - shows all tables in the database
+- `.schema [table name]` - shows the schema for the given table name. For our purposes, you can use `.schema messages` to see the schema for the newly created table.
+- `.quit` - quits sqlite3
+
 ### To run the server:
 `FLASK_APP=message_server/app.py flask run -h localhost -p 8080` (this tells flask to use the code in `message_server/app.py` as its application code and also says to respond on `localhost` which is your local machine and on port 8080)
 
