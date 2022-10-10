@@ -31,13 +31,15 @@ def get_messages(user_id):
             (user_id,)
         )
         # get column names from response
+        # list comprehension
         column_names = [ descrip[0] for descrip in result.description ]
         # build dictionary response
         for msg in result.fetchall():
+            # dictionary comprehension
             all_messages.append(
-                dict(
-                    (column_names[i], msg[i]) for i in range(len(column_names))
-                )
+                {
+                    column_names[i]:msg[i] for i in range(len(column_names))
+                }
             )
     except Exception as e:
         print(e.message)
