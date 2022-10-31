@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS messages (
    id integer PRIMARY KEY AUTOINCREMENT,
-   from_user text not null,
-   to_user text not null,
+   from_user_id integert not null,
+   to_user_id integer not null,
    message text not null
 )

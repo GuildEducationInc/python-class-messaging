@@ -44,7 +44,7 @@ Unit tests are stored in the `tests` directory. To run:
 - Import the requests library - `import requests`
 
 ### Send a message
-- `requests.post('http://localhost:8080/post-message', data='{"fromUser": "From", "toUser": "To", "message": "Very first message"}')`
+- `requests.post('http://localhost:8080/post-message', data='{"fromUser": 1, "toUser": 2, "message": "Very first message"}')`
 
 There's a bit to go through here:
 - `requests.post` is making a "POST" request to your server. We'll go into a little more detail later on what that means.

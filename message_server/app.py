@@ -7,6 +7,9 @@ import sqlite3
 # Flask is what we'll use to create the actual app instance
 from flask import request, Flask
 
+# importing models to use the objects there
+from message_server.models import User, Message
+
 # Creating the Flask APP. `__name__` is a variable that is accessible to all python modules
 # and isn't particularly relevant at the moment
 app = Flask(__name__)
@@ -18,35 +21,14 @@ app = Flask(__name__)
 # in on the `user_id` variable to the function.
 @app.route('/get-messages/<user_id>')
 def get_messages(user_id):
-    # establish a connection to the database
-    conn = sqlite3.connect('messages.db')
-    # create a cursor which we will use to execute sql
-    cursor = conn.cursor()
     # list to hold all messages
     all_messages = []
     try:
-        # execute sql to get messages for user
-        result = cursor.execute(
-            'SELECT * FROM messages WHERE to_user = ?',
-            (user_id,)
-        )
-        # get column names from response
-        # list comprehension
-        column_names = [ descrip[0] for descrip in result.description ]
-        # build dictionary response
-        for msg in result.fetchall():
-            # dictionary comprehension
-            all_messages.append(
-                {
-                    column_names[i]:msg[i] for i in range(len(column_names))
-                }
-            )
+        for message in Message.get(to_user_id=user_id):
+            all_messages.append(message.to_json())
     except Exception as e:
         print(e.message)
         return e.message, 500
-    finally:
-        cursor.close()
-        conn.close()
     # return the messages in a JSON format
     return json.dumps(all_messages)
 
@@ -64,22 +46,11 @@ def post_message():
          "message": the text of the message
        }
     '''
-    message = json.loads(request.data)
-    conn = sqlite3.connect('messages.db')
-    cursor = conn.cursor()
-    try:
-        cursor.execute('''
-          INSERT INTO messages (from_user, to_user, message)
-          VALUES (?, ?, ?)
-        ''', (message['fromUser'], message['toUser'], message['message'])
-        )
-        conn.commit()
-    except Exception as e:
-        print(e.message)
-        return e.message, 500
-    finally:
-        cursor.close()
-        conn.close()
-    # return a nice response - for a comprehensive list of possible response codes,
-    # see https://www.webfx.com/web-development/glossary/http-status-codes/
+    request_data = json.loads(request.data)
+    message = Message(
+        from_user_id=request_data['fromUser'],
+        to_user_id=request_data['toUser'],
+        message=request_data['message']
+    )
+    message.save()
     return '', 202
