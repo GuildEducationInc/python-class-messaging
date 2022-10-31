@@ -1,7 +1,5 @@
 # JSON is a lightweight format for storing and transporting data.
 import json
-# SQLite is a database that comes with Python
-import sqlite3
 
 # request is the way you access the incoming request
 # Flask is what we'll use to create the actual app instance
