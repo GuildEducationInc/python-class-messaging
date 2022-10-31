@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS comments (
    id integer PRIMARY KEY AUTOINCREMENT,
-   from_user_id integert not null,
-   to_user_id integer not null,
+   user_id integert not null,
    message_id integer not null,
    comment text not null
 )
