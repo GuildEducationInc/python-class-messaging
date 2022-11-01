@@ -5,19 +5,12 @@ import json
 # Flask is what we'll use to create the actual app instance
 from flask import request, Flask
 
-# defaultdict is a really handy convenience tool that allows you to
-# create a python dictionary that will have default values when you access a key
-# In this case, if I request a key that doesn't exist, it will return an empty array.
-# For more info, see https://realpython.com/python-defaultdict/
-from collections import defaultdict
+# importing models to use the objects there
+from message_server.models import User, Message
 
 # Creating the Flask APP. `__name__` is a variable that is accessible to all python modules
 # and isn't particularly relevant at the moment
 app = Flask(__name__)
-
-# Creating my storage. Note this will be empty every time I start the server. It would
-# be better to use a more permanent storage mechanism.
-MESSAGES=defaultdict(list)
 
 # This is a "decorator" (see https://realpython.com/primer-on-python-decorators/).
 # It tells the app we created above that when a request is received for this "path",
@@ -26,8 +19,14 @@ MESSAGES=defaultdict(list)
 # in on the `user_id` variable to the function.
 @app.route('/get-messages/<user_id>')
 def get_messages(user_id):
-    # get messages from our storage variable for the given "user_id"
-    all_messages = MESSAGES.get(user_id, [])
+    # list to hold all messages
+    all_messages = []
+    try:
+        for message in Message.get(to_user_id=user_id):
+            all_messages.append(message.to_json())
+    except Exception as e:
+        print(e.message)
+        return e.message, 500
     # return the messages in a JSON format
     return json.dumps(all_messages)
 
@@ -45,9 +44,11 @@ def post_message():
          "message": the text of the message
        }
     '''
-    message = json.loads(request.data)
-    # write to the MESSAGES storage variable using the "toUser" value from the message as the key
-    MESSAGES[message['toUser']].append(message)
-    # return a nice response - for a comprehensive list of possible response codes,
-    # see https://www.webfx.com/web-development/glossary/http-status-codes/
+    request_data = json.loads(request.data)
+    message = Message(
+        from_user_id=request_data['fromUser'],
+        to_user_id=request_data['toUser'],
+        message=request_data['message']
+    )
+    message.save()
     return '', 202
