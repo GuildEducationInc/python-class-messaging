@@ -121,3 +121,68 @@ class Message():
             )
 
         return response
+
+
+class Comment():
+
+    def __init__(self, **kwargs):
+        self.id = kwargs.get('id')
+        self.user_id  = kwargs.get('user_id')
+        self.message_id  = kwargs.get('message_id')
+        self.comment = kwargs.get('comment')
+
+    def save(self):
+        conn = sqlite3.connect('messages.db')
+        cursor = conn.cursor()
+        try:
+            if self.id:
+                cursor.execute(
+                    'UPDATE comments SET comment=?, user_id=?, message_id=? WHERE id=?',
+                    (self.comment, self.user_id, self.message_id, self.id)
+                )
+            else:
+                cursor.execute(
+                    'INSERT INTO comments (user_id, message_id, comment) VALUES (?,?,?)',
+                    (self.user_id, self.message_id, self.comment)
+                )
+                self.id = cursor.lastrowid
+            conn.commit()
+        finally:
+            cursor.close()
+            conn.close()
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'message_id': self.message_id,
+            'comment': self.comment
+        }
+    @staticmethod
+    def get(message_id=None, comment=None, user_id=None, order_by=None):
+        conn = sqlite3.connect('messages.db')
+        cursor = conn.cursor()
+        sql = 'SELECT id, user_id, message_id, comment FROM comments WHERE 1 = 1'
+        params = []
+        if message_id:
+            sql += ' AND id = ?'
+            params.append(message_id)
+        if user_id:
+            sql += ' AND user_id = ?'
+            params.append(user_id)
+        if comment:
+            sql += ' AND comment = ?'
+            params.append(comment)
+        result = cursor.execute(sql, params)
+        response = []
+        for comment in result.fetchall():
+            response.append(
+                Comment(
+                    id=comment[0],
+                    user_id=comment[1],
+                    message_id=comment[2],
+                    comment=comment[3]
+                )
+            )
+
+        return response
