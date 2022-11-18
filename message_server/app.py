@@ -6,7 +6,7 @@ import json
 from flask import request, Flask
 
 # importing models to use the objects there
-from message_server.models import User, Message
+from message_server.models import User, Message, Comment
 
 # Creating the Flask APP. `__name__` is a variable that is accessible to all python modules
 # and isn't particularly relevant at the moment
@@ -30,6 +30,20 @@ def get_messages(user_id):
     # return the messages in a JSON format
     return json.dumps(all_messages)
 
+@app.route('/get-all-users', methods=['GET'])
+def get_all_users():
+    # list to hold all users
+    all_users = []
+    
+    try:
+        for user in User.get(first_name=user):
+            all_users.append(user.to_json()) 
+    except Exception as e:
+        print(e.user)
+        return e.user, 500
+    # return the messages in a JSON format
+    return json.dumps(all_users)
+
 
 # Decorator to handle routing for posting messages. "methods" here specifies
 # what http method this route accepts. We can get into that more later
@@ -51,4 +65,24 @@ def post_message():
         message=request_data['message']
     )
     message.save()
+    return '', 202
+
+@app.route('/post-comment', methods=['POST'])
+def post_comment():
+    '''
+    convert the incoming comment from JSON format to a python dictionary
+    the comment is expected to be a dictionary that looks like this:
+       {
+         "user_id: the user id sending the message,
+         "message_id": the user id receiving the message,
+         "comment": the text of the message
+       }
+    '''
+    request_data = json.loads(request.data)
+    comment = Comment(
+        user_id=request_data['user_id'],
+        message_id=request_data['message_id'],
+        comment=request_data['comment']
+    )
+    comment.save()
     return '', 202
