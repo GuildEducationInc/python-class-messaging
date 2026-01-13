@@ -1,3 +1,7 @@
+> [!IMPORTANT]
+>
+> This project is deprecated and is read-only for historical context only.
+
 # python-class-messaging
 
 This repository contains very basic code for the Python class. It's a messaging API that allows the user to send and receive messages. It uses [Flask](https://flask.palletsprojects.com/en/2.2.x/) as the web framework and a (not-recommended) in-memory database for storage. This is the take-home project we send to prospective engineers.
